@@ -1,22 +1,28 @@
 ﻿using Zetworking;
 
-Console.WriteLine("1: Client\n2: Server");
-int choosed = int.Parse(Console.ReadLine());
-if (choosed == 1)
+const string ipAddress = "127.0.0.1";
+const int port = 1717;
+
+Console.WriteLine("Press\n  `S` for server\n  `C` for client");
+ConsoleKey key = Console.ReadKey(intercept: true).Key;
+if (key == ConsoleKey.S)
 {
-    using var client = new ZetClient();
-    client.Connect("127.0.0.1", 1717);
-    Console.WriteLine("Connected");
-    client.Disconnect();
-    Console.WriteLine("Disconnected");
-    client.Connect("127.0.0.1", 1717);
-    Console.WriteLine("Connected");
-    client.Disconnect();
-    Console.WriteLine("Disconnected");
+    ZetServer server = new();
+    server.Start(port);
+    server.AcceptNextConnection();
+    Console.ReadKey();
+    server.Stop();
+    Console.ReadKey();
 }
-else
+else if (key == ConsoleKey.C)
 {
-    using var server = new ZetServer();
-    server.Start(1717);
-    Console.ReadLine();
+    ZetClient client = new();
+    client.Connect(ipAddress, port);
+    Console.ReadKey();
+    client.Disconnect();
+    Console.ReadKey();
+    client.Connect(ipAddress, port);
+    Console.ReadKey();
+    client.Disconnect();
+    Console.ReadKey();
 }
